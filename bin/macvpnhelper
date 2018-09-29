@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 #configuration options
-vpn_name = "'TDEV IPSec VPN'"
 app_name = "vpnhelper"
+vpn_name = "'TDEV IPSec VPN'"
 
 # accept commandline input
 import argparse
@@ -14,7 +14,7 @@ import subprocess
 
 #DEFAULT OPTIONS
 # Run for workday, fill in password, don't hit enter, use normal delays. If user wishes to update password, defaults to chrome.
-defaults = {'fillpassword':'yes', 'duration':'wd', 'clickspeed':'normal', 'updatepass':'chrome'}
+defaults = {'fillpassword':'yes', 'duration':'wd', 'clickspeed':'normal', 'updatepass':'chrome', 'warning':'yes'}
 
 clickspeed = {'superslow':2, 'slow':1, 'normal':1, 'fast':0.5, 'superfast':0.25}
 
@@ -44,12 +44,26 @@ parser.add_argument("--updatepass", "-up", default=defaults['updatepass'], help=
 
 parser.add_argument("--loginonly", "-l", action="store_true", help="Logs in once and quits.")
 
+parser.add_argument("--warning", "-w", default=defaults['warning'], help="(yes|no|warnOnly) Displays warning message when vpn disconnects. If warnOnly is set, the program will display warning messages when the vpn disconnects but not attempt to do anything else.")
+
 # read arguments from the command line
 args = parser.parse_args()
 
-def genAppleScript():
+
+def setupDelayArgs():
+    global majorDelay
+    global minorDelay
+    
     minorDelay = clickspeed[args.clickspeed]
     majorDelay = minorDelay*2
+
+    print("Major Delay = {}".format(majorDelay))
+
+def setupFillPasswordArgs():
+    global inputPassword
+    global closeDialog
+    
+    """Sets up applescript pieces for filling in the password.  Must setup delay first."""
 
     #Default: fill password, don't do anything else
     inputPassword = """
@@ -57,7 +71,6 @@ def genAppleScript():
 		keystroke passwd
     """.format(majorDelay=majorDelay)
     closeDialog = ""
-
     
     if(args.fillpassword == 'yes'):
         pass
@@ -71,8 +84,35 @@ def genAppleScript():
 
     """.format(minorDelay=minorDelay)        
     else:
-        print("Invalid argument passed to --fillpassword")
+        print("Invalid argument passed to --fillpassword / -fp")
         sys.exit()
+
+def setupAlertArgs():
+    global alert_applescript
+
+    alert_applescript = """
+    display dialog "VPN has disconnected" ¬
+    with title "{vpn_name} longer active" ¬
+    with icon caution ¬
+    buttons {{"OK"}}
+    """.format(vpn_name=vpn_name)
+    if(args.warning == 'yes'):
+        args.fillpassword = 'no'
+    elif(args.warning == 'no'):
+        alert_applescript = ""
+    elif(args.warning == 'warnOnly'):
+        ## NEED TO IMPLEMENT
+        pass
+    else:
+        print("Invalid argument passed to --warning / -w")
+        sys.exit()    
+        
+def genAppleScript():
+    """Outputs applescript to be run by program."""
+    
+    setupDelayArgs()
+    setupFillPasswordArgs()
+    setupAlertArgs()
     
     return """set vpn_name to "{vpn_name}"
 set user_name to "{username}"
@@ -90,12 +130,5 @@ end tell""".format(vpn_name=vpn_name,username=username,password=password,inputPa
 print(genAppleScript())
 
 
-applescript = """
-display dialog "Some message goes here..." ¬
-with title "This is a pop-up window" ¬
-with icon caution ¬
-buttons {"OK"}
-"""
-
-subprocess.call("osascript -e '{}'".format(applescript), shell=True)
+#subprocess.call("osascript -e '{}'".format(alert_applescript), shell=True)
 

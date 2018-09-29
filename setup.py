@@ -8,7 +8,7 @@ setuptools.setup(
     name="macvpnhelper",
 
     # Version number (initial):
-    version="0.0.1",
+    version="0.0.3",
 
     # Application author details:
     author="Ryan Shea",
@@ -39,8 +39,8 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     
-    # Dependent packages (distributions)
-    #install_requires=[
-    #    "flask",
-    #],
+     #Dependency packages (distributions)
+    install_requires=[
+        "keyring",
+    ],
 )
