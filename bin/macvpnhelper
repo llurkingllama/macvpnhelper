@@ -1,7 +1,16 @@
 #!/usr/bin/env python3
 
-#Should output 4 if screen is active on mac, 0 otherwise:
-# ioreg -n IODisplayWrangler | grep -i IOPowerManagement | perl -pe 's/^.*DevicePowerState\"=([0-9]+).*$/\1/'
+
+def screenActive():
+    """Returns False if screen is locked.  True otherwise."""
+    
+    #Should output 4 if screen is active on mac, 0 otherwise:
+    code =  subprocess.call("ioreg -n IODisplayWrangler | grep -i IOPowerManagement | perl -pe 's/^.*DevicePowerState\"=([0-9]+).*$/\1/'".format( genAppleScript() ), shell=True)
+
+    if code == 4:
+       return True
+    else:
+        return false
 
 
 #configuration options
@@ -178,8 +187,6 @@ def main():
         except:
             print("Invalid option passed to --duration / -d")
             sys.exit(2)
-
-#        print("Time.time {now} and startTime is {start}".format(now=time.time(), start=startTime))
 
         while( (time.time() - startTime) < secondsToRun):
             runScript()
