@@ -43,7 +43,7 @@ parser = argparse.ArgumentParser()
 # add long and short argument
 parser.add_argument("--duration", "-d", default=defaults['duration'], help="(time in hours|'wd'|'fd') E.g., 8h, the amount of time (in hours) to keep the VPN active. Use 'wd' to do 9-12 and 1-6 (default), or 'fd' to do 9-6.")
 
-parser.add_argument("--clickspeed", "-s", default=defaults['clickspeed'], help="(superfast|fast|normal|slow|superslow) adjust based on responsiveness of your GUI")
+parser.add_argument("--clickspeed", "-cs", default=defaults['clickspeed'], help="(superfast|fast|normal|slow|superslow) adjust based on responsiveness of your GUI")
 
 parser.add_argument("--fillpassword", "-fp", default=defaults['fillpassword'],  help="(yes|no|andReturn) type in password and optionally hit return in the dialogs.  CAUTION: since this password is provided to the GUI, it is possible that intermediate clicks will result in your password being typed to, e.g., chat dialogs. 'yes' is therefore safer than 'andReturn.'")
 
@@ -51,11 +51,12 @@ parser.add_argument("--updatepass", "-up", default=defaults['updatepass'], help=
 
 parser.add_argument("--loginonly", "-l", action="store_true", help="Logs in once and quits.")
 
-parser.add_argument("--warning", "-w", default=defaults['warning'], help="(yes|no|warnOnly) Displays warning message when vpn disconnects. If warnOnly is set, the program will display warning messages when the vpn disconnects but not attempt to do anything else.")
+parser.add_argument("--warning", "-w", default=defaults['warning'], help="(yes|no|warnOnly) Displays warning message when vpn disconnects. If warnOnly is set, the program will display warning messages when the vpn is disconnected but not attempt to do anything else.")
+
+parser.add_argument("--simulate", "-s", action="store_true", help="When set, script which would be executed is instead printed to the terminal.")
 
 # read arguments from the command line
 args = parser.parse_args()
-
 
 def setupDelayArgs():
     global majorDelay
@@ -94,13 +95,14 @@ def setupFillPasswordArgs():
 
 def setupWarningArgs():
     global alert_applescript
-
+    
     alert_applescript = """
     display dialog "VPN has disconnected" ¬
     with title "{vpn_name} longer active" ¬
     with icon caution ¬
     buttons {{"OK"}}
     """.format(vpn_name=vpn_name)
+    
     if(args.warning == 'yes'):
         args.fillpassword = 'no'
     elif(args.warning == 'no'):
@@ -133,6 +135,18 @@ tell application "System Events"
 end tell""".format(vpn_name=vpn_name,username=username,password=password,inputPassword=inputPassword, closeDialog=closeDialog)
 
 
+
+def runScript():
+    if(args.simulate == True):
+        print(genAppleScript())
+        return
+    elif(args.warning == 'warnOnly'):
+        return
+    elif(args.warning == 'yes'):
+        pass
+    subprocess.call("osascript -e '{}'".format( genAppleScript() ), shell=True)
+        
+
 def main():
     #time in seconds
     dayBegins = datetime.datetime.now().replace(hour=9, minute=0, second=0)
@@ -142,7 +156,8 @@ def main():
     
     if args.duration == 'fd':
         while(datetime.datetime.now() < dayEnds):
-            print(genAppleScript())
+            #print(genAppleScript())
+            runScript()
             time.sleep(int(update_interval))
         print("Completed work day. Good bye!")    
         sys.exit(0)
@@ -150,7 +165,7 @@ def main():
     if args.duration == 'wd':
         while(datetime.datetime.now() < dayEnds):
             if ( not( lunchBegins < datetime.datetime.now() < lunchEnds) ):
-                print(genAppleScript())
+                runScript()
                 time.sleep(int(update_interval))
         print("Completed work day. Good bye!")    
         sys.exit(0)
@@ -167,7 +182,7 @@ def main():
 #        print("Time.time {now} and startTime is {start}".format(now=time.time(), start=startTime))
 
         while( (time.time() - startTime) < secondsToRun):
-            print(genAppleScript())
+            runScript()
             time.sleep(int(update_interval))
 
         print("Completed {} hour interval. Good bye!".format(hours))    
@@ -177,6 +192,5 @@ def main():
 if __name__ == "__main__":
     print(genAppleScript())
     main()
-    
-#subprocess.call("osascript -e '{}'".format(alert_applescript), shell=True)
 
+    
