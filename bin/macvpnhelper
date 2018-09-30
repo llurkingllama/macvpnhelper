@@ -17,6 +17,7 @@ import getpass
 import sys
 import subprocess
 import time
+import datetime
 
 #DEFAULT OPTIONS
 # Run for workday, fill in password, don't hit enter, use normal delays. If user wishes to update password, defaults to chrome.
@@ -134,16 +135,29 @@ end tell""".format(vpn_name=vpn_name,username=username,password=password,inputPa
 
 def main():
     #time in seconds
-    startTime = time.time()
-
+    dayBegins = datetime.datetime.now().replace(hour=9, minute=0, second=0)
+    dayEnds =  datetime.datetime.now().replace(hour=18, minute=0, second=0)
+    lunchBegins = datetime.datetime.now().replace(hour=12, minute=0, second=0)
+    lunchEnds = datetime.datetime.now().replace(hour=13, minute=0, second=0)
+    
     if args.duration == 'fd':
-        pass
+        while(datetime.datetime.now() < dayEnds):
+            print(genAppleScript())
+            time.sleep(int(update_interval))
+        print("Completed work day. Good bye!")    
+        sys.exit(0)
+        
     if args.duration == 'wd':
-        pass
+        while(datetime.datetime.now() < dayEnds):
+            if ( not( lunchBegins < datetime.datetime.now() < lunchEnds) ):
+                print(genAppleScript())
+                time.sleep(int(update_interval))
+        print("Completed work day. Good bye!")    
+        sys.exit(0)
+        
     else:        
         try:
-            print(args.duration)
-            print(str(args.duration).split("h")[0])
+            startTime = time.time()
             hours = float(str(args.duration).split("h")[0])
             secondsToRun = hours*60
         except:
