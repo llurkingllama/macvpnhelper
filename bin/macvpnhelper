@@ -34,18 +34,28 @@ defaults = {'fillpassword':'yes', 'duration':'wd', 'clickspeed':'normal', 'updat
 
 clickspeed = {'superslow':2, 'slow':1, 'normal':1, 'fast':0.5, 'superfast':0.25}
 
-#fetchpassword
-try:
-    username = keyring.get_password(app_name, "username")
+
+def fetchCredentials():
+    username = keyring.get_password(vpn_name, "username")
     if username == None:
         raise
-    password = keyring.get_password(app_name, "password")
-except:
+    password = keyring.get_password(vpn_name, "password")
+    
+def resetCredentials():
     username = input("Please supply the vpn username:")
     password = getpass.getpass("Please supply the vpn password:")
-    keyring.set_password(app_name, "username", username)
-    keyring.set_password(app_name, "password", password)
+    keyring.set_password(vpn_name, "username", username)
+    keyring.set_password(vpn_name, "password", password)
+    
 
+#fetchpassword
+try:
+    fetchCredentials()
+except:    
+    resetCredentials()
+
+    
+    
 # initiate the parser
 parser = argparse.ArgumentParser()
 
@@ -63,6 +73,8 @@ parser.add_argument("--loginonly", "-l", action="store_true", help="Logs in once
 parser.add_argument("--warning", "-w", default=defaults['warning'], help="(yes|no|warnOnly) Displays warning message when vpn disconnects. If warnOnly is set, the program will display warning messages when the vpn is disconnected but not attempt to do anything else.")
 
 parser.add_argument("--simulate", "-s", action="store_true", help="When set, script which would be executed is instead printed to the terminal.")
+
+parser.add_argument("--reset", action="store_true", help="Use to reset your login information.")
 
 # read arguments from the command line
 args = parser.parse_args()
