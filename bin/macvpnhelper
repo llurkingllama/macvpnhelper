@@ -7,6 +7,8 @@
 #configuration options
 app_name = "vpnhelper"
 vpn_name = "'TDEV IPSec VPN'"
+update_interval = "5" #how often to check VPN (in seconds)
+
 
 # accept commandline input
 import argparse
@@ -60,8 +62,6 @@ def setupDelayArgs():
     
     minorDelay = clickspeed[args.clickspeed]
     majorDelay = minorDelay*2
-
-    print("Major Delay = {}".format(majorDelay))
 
 def setupFillPasswordArgs():
     global inputPassword
@@ -131,27 +131,38 @@ tell application "System Events"
 	end if
 end tell""".format(vpn_name=vpn_name,username=username,password=password,inputPassword=inputPassword, closeDialog=closeDialog)
 
-print(genAppleScript())
-
 
 def main():
-
     #time in seconds
     startTime = time.time()
 
-    hour = int(delta / 3600)
-    
     if args.duration == 'fd':
         pass
     if args.duration == 'wd':
         pass
-    else:
+    else:        
         try:
-            pass
+            print(args.duration)
+            print(str(args.duration).split("h")[0])
+            hours = float(str(args.duration).split("h")[0])
+            secondsToRun = hours*60
         except:
             print("Invalid option passed to --duration / -d")
             sys.exit(2)
 
+#        print("Time.time {now} and startTime is {start}".format(now=time.time(), start=startTime))
+
+        while( (time.time() - startTime) < secondsToRun):
+            print(genAppleScript())
+            time.sleep(int(update_interval))
+
+        print("Completed {} hour interval. Good bye!".format(hours))    
+        sys.exit(0)
+
         
+if __name__ == "__main__":
+    print(genAppleScript())
+    main()
+    
 #subprocess.call("osascript -e '{}'".format(alert_applescript), shell=True)
 
