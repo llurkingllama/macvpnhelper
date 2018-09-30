@@ -36,12 +36,18 @@ clickspeed = {'superslow':2, 'slow':1, 'normal':1, 'fast':0.5, 'superfast':0.25}
 
 
 def fetchCredentials():
+    global username
+    global password
+    
     username = keyring.get_password(vpn_name, "username")
     if username == None:
         raise
     password = keyring.get_password(vpn_name, "password")
     
 def resetCredentials():
+    global username
+    global password
+
     username = input("Please supply the vpn username:")
     password = getpass.getpass("Please supply the vpn password:")
     keyring.set_password(vpn_name, "username", username)
