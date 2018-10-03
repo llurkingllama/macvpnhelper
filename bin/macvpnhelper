@@ -2,7 +2,7 @@
 
 #configuration options
 app_name = "vpnhelper"
-vpn_name = "'TDEV IPSec VPN'"
+vpn_name = "TDEV IPSec VPN"
 update_interval = "5" #how often to check VPN (in seconds)
 
 
@@ -162,7 +162,7 @@ def genAppleScript():
     setupFillPasswordArgs()
     setupWarningArgs()
     
-    return """set vpn_name to "{vpn_name}"
+    return """set vpn_name to "\\\"{vpn_name}\\\""
 set user_name to "{username}"
 set passwd to "{password}"
 
