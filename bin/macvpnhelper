@@ -162,14 +162,14 @@ def genAppleScript():
     setupFillPasswordArgs()
     setupWarningArgs()
     
-    return """set vpn_name to \"{vpn_name}\"
-set user_name to \"{username}\"
-set passwd to \"{password}\"
+    return """set vpn_name to "{vpn_name}"
+set user_name to "{username}"
+set passwd to "{password}"
 
-tell application \"System Events\"
-	set rc to do shell script \"scutil --nc status \" & vpn_name
-	if rc starts with \"Disconnected\" then
-		do shell script \"scutil --nc start \" & vpn_name & \" --user \" & user_name
+tell application "System Events"
+	set rc to do shell script "scutil --nc status " & vpn_name
+	if rc starts with "Disconnected" then
+		do shell script "scutil --nc start " & vpn_name & " --user " & user_name
     {inputPassword}
     {closeDialog}
 	end if
@@ -186,7 +186,7 @@ def runScript():
         return
     elif(args.warning == 'yes'):
         pass
-    subprocess.call("""osascript -e "{}" """.format( genAppleScript() ), shell=True)
+    subprocess.call("""osascript -e '{}' """.format( genAppleScript() ), shell=True)
         
 
 def main():
