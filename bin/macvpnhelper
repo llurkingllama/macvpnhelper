@@ -1,18 +1,5 @@
 #!/usr/bin/env python3
 
-
-def screenActive():
-    """Returns False if screen is locked.  True otherwise."""
-    
-    #Should output 4 if screen is active on mac, 0 otherwise:
-    code =  subprocess.call("ioreg -n IODisplayWrangler | grep -i IOPowerManagement | perl -pe 's/^.*DevicePowerState\"=([0-9]+).*$/\1/'".format( genAppleScript() ), shell=True)
-
-    if code == 4:
-       return True
-    else:
-        return false
-
-
 #configuration options
 app_name = "vpnhelper"
 vpn_name = "'TDEV IPSec VPN'"
@@ -28,6 +15,11 @@ import subprocess
 import time
 import datetime
 
+try:
+    import httplib
+except:
+    import http.client as httplib
+
 #DEFAULT OPTIONS
 # Run for workday, fill in password, don't hit enter, use normal delays. If user wishes to update password, defaults to chrome.
 defaults = {'fillpassword':'yes', 'duration':'wd', 'clickspeed':'normal', 'updatepass':'chrome', 'warning':'yes'}
@@ -35,6 +27,28 @@ defaults = {'fillpassword':'yes', 'duration':'wd', 'clickspeed':'normal', 'updat
 clickspeed = {'superslow':2, 'slow':1, 'normal':1, 'fast':0.5, 'superfast':0.25}
 
 
+def screenActive():
+    """Returns False if screen is locked.  True otherwise."""
+    
+    #Should output 4 if screen is active on mac, 0 otherwise:
+    code =  subprocess.call("ioreg -n IODisplayWrangler | grep -i IOPowerManagement | perl -pe 's/^.*DevicePowerState\"=([0-9]+).*$/\1/'".format( genAppleScript() ), shell=True)
+
+    if code == 4:
+       return True
+    else:
+        return false
+
+def connectionResponsive():
+    """Checks if it's possible to talk to google"""
+    connection = httplib.HTTPConnection("www.google.com", timeout=5)
+    try:
+        connection.request("HEAD", "/")
+        connection.close()
+        return True
+    except:
+        connection.close()
+        return False
+    
 def fetchCredentials():
     global username
     global password
@@ -148,18 +162,19 @@ def genAppleScript():
     setupFillPasswordArgs()
     setupWarningArgs()
     
-    return """set vpn_name to "{vpn_name}"
-set user_name to "{username}"
-set passwd to "{password}"
+    return """set vpn_name to \"{vpn_name}\"
+set user_name to \"{username}\"
+set passwd to \"{password}\"
 
-tell application "System Events"
-	set rc to do shell script "scutil --nc status " & vpn_name
-	if rc starts with "Disconnected" then
-		do shell script "scutil --nc start " & vpn_name & " --user " & user_name
+tell application \"System Events\"
+	set rc to do shell script \"scutil --nc status \" & vpn_name
+	if rc starts with \"Disconnected\" then
+		do shell script \"scutil --nc start \" & vpn_name & \" --user \" & user_name
     {inputPassword}
     {closeDialog}
 	end if
-end tell""".format(vpn_name=vpn_name,username=username,password=password,inputPassword=inputPassword, closeDialog=closeDialog)
+end tell
+""".format(vpn_name=vpn_name,username=username,password=password,inputPassword=inputPassword, closeDialog=closeDialog)
 
 
 
@@ -171,7 +186,7 @@ def runScript():
         return
     elif(args.warning == 'yes'):
         pass
-    subprocess.call("osascript -e '{}'".format( genAppleScript() ), shell=True)
+    subprocess.call("""osascript -e "{}" """.format( genAppleScript() ), shell=True)
         
 
 def main():
