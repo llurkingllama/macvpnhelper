@@ -52,11 +52,13 @@ def connectionResponsive():
 def fetchCredentials():
     global username
     global password
-    
+    global vpn_name
+
     username = keyring.get_password(vpn_name, "username")
     if username == None:
         raise
     password = keyring.get_password(vpn_name, "password")
+#    vpn_name = keyring.get_password(vpn_name, "vpn_name")
     
 def resetCredentials():
     global username
@@ -74,8 +76,6 @@ try:
 except:    
     resetCredentials()
 
-    
-    
 # initiate the parser
 parser = argparse.ArgumentParser()
 
@@ -96,8 +96,25 @@ parser.add_argument("--simulate", "-s", action="store_true", help="When set, scr
 
 parser.add_argument("--reset", action="store_true", help="Use to reset your login information.")
 
+parser.add_argument("--vpn", "-n", help="Name of VPN to connect to. Must match your configured connection.")
+
 # read arguments from the command line
 args = parser.parse_args()
+
+
+
+#fetch VPN Name
+try:
+    vpn_name = keyring.get_password(vpn_name, "vpn_name")    
+except:
+    vpn_name = args.vpn
+if vpn_name == None:
+    vpn_name = input("Please supply the vpn name:")
+else:
+    keyring.set_password(vpn_name, "vpn_name", vpn_name)
+
+
+    
 
 def setupDelayArgs():
     global majorDelay
@@ -145,7 +162,8 @@ def setupWarningArgs():
     """.format(vpn_name=vpn_name)
     
     if(args.warning == 'yes'):
-        args.fillpassword = 'no'
+        pass
+      #  args.fillpassword = 'no'
     elif(args.warning == 'no'):
         alert_applescript = ""
     elif(args.warning == 'warnOnly'):
