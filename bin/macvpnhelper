@@ -22,7 +22,7 @@ except:
 
 #DEFAULT OPTIONS
 # Run for workday, fill in password, don't hit enter, use normal delays. If user wishes to update password, defaults to chrome.
-defaults = {'fillpassword':'yes', 'duration':'wd', 'clickspeed':'normal', 'updatepass':'chrome', 'warning':'yes'}
+defaults = {'fillpassword':'andReturn', 'duration':'wd', 'clickspeed':'normal', 'updatepass':'chrome', 'warning':'yes'}
 
 clickspeed = {'superslow':2, 'slow':1, 'normal':1, 'fast':0.5, 'superfast':0.25}
 
@@ -186,33 +186,29 @@ def runScript():
         pass
     subprocess.call("""osascript -e '{}' """.format( genAppleScript() ), shell=True)
         
-
 def main():
     global vpn_name
 
-    #fetchpassword
+    #Get user selected options
+    setupCommandlineInputs()
+    
+    #Get VPN Name
+    if args.vpn != None:
+        vpn_name = args.vpn
+        print("VPN name set to {}. In the future, this name will be used by default unless reset with --vpn=\"name\".".format(vpn_name))
+    elif keyring.get_password(vpn_name, "vpn_name") != None:
+        vpn_name = keyring.get_password(vpn_name, "vpn_name")
+        print("Using previous VPN name of {}.  To use a different VPN name, run with --vpn=\"name\".".format(vpn_name))
+    else:
+        vpn_name = input("No VPN name was given. Please supply the vpn name:")  
+        print("VPN name set to {}. In the future, this name will be used by default unless reset with --vpn=\"name\".".format(vpn_name))
+    keyring.set_password(vpn_name, "vpn_name", vpn_name)
+    
+    #Get VPN password and username
     try:
         fetchCredentials()
     except:    
         resetCredentials()
-    
-    #fetch VPN Name
-    vpn_name = keyring.get_password(vpn_name, "vpn_name")
-    #print("Set vpn_name to {} (from keyring)".format(vpn_name))
-    print("Using previous VPN name of {}.  To use a different VPN name, run with --vpn=name.".format(vpn_name))
-    if vpn_name == None:
-        vpn_name = args.vpn
-        #print("Set vpn_name to {} (from args.vpn)".format(vpn_name))
-    if vpn_name == None:
-        vpn_name = input("No VPN name was given. Please supply the vpn name:")
-        #print("Set vpn_name to {} (from keyboardinput)".format(vpn_name))
-    keyring.set_password(vpn_name, "vpn_name", vpn_name)
-
-
-    setupCommandlineInputs()
-
-
-
         
     #time in seconds
     dayBegins = datetime.datetime.now().replace(hour=9, minute=0, second=0)
