@@ -68,7 +68,6 @@ def resetCredentials():
     password = getpass.getpass("Please supply the vpn password:")
     keyring.set_password(vpn_name, "username", username)
     keyring.set_password(vpn_name, "password", password)
-    
 
 #fetchpassword
 try:
@@ -76,40 +75,49 @@ try:
 except:    
     resetCredentials()
 
-# initiate the parser
-parser = argparse.ArgumentParser()
 
-# add long and short argument
-parser.add_argument("--duration", "-d", default=defaults['duration'], help="(time in hours|'wd'|'fd') E.g., 8h, the amount of time (in hours) to keep the VPN active. Use 'wd' to do 9-12 and 1-6 (default), or 'fd' to do 9-6.")
+def setupCommandlineInputs():
+    global args
+    
+    # initiate the parser
+    parser = argparse.ArgumentParser()
 
-parser.add_argument("--clickspeed", "-cs", default=defaults['clickspeed'], help="(superfast|fast|normal|slow|superslow) adjust based on responsiveness of your GUI")
+    # add long and short argument
+    parser.add_argument("--duration", "-d", default=defaults['duration'], help="(time in hours|'wd'|'fd') E.g., 8h, the amount of time (in hours) to keep the VPN active. Use 'wd' to do 9-12 and 1-6 (default), or 'fd' to do 9-6.")
 
-parser.add_argument("--fillpassword", "-fp", default=defaults['fillpassword'],  help="(yes|no|andReturn) type in password and optionally hit return in the dialogs.  CAUTION: since this password is provided to the GUI, it is possible that intermediate clicks will result in your password being typed to, e.g., chat dialogs. 'yes' is therefore safer than 'andReturn.'")
+    parser.add_argument("--clickspeed", "-cs", default=defaults['clickspeed'], help="(superfast|fast|normal|slow|superslow) adjust based on responsiveness of your GUI")
 
-parser.add_argument("--updatepass", "-up", default=defaults['updatepass'], help="(chrome|firefox|anyothername) opens TrustArc password portal in browser.")
+    parser.add_argument("--fillpassword", "-fp", default=defaults['fillpassword'],  help="(yes|no|andReturn) type in password and optionally hit return in the dialogs.  CAUTION: since this password is provided to the GUI, it is possible that intermediate clicks will result in your password being typed to, e.g., chat dialogs. 'yes' is therefore safer than 'andReturn.'")
 
-parser.add_argument("--loginonly", "-l", action="store_true", help="Logs in once and quits.")
+    parser.add_argument("--updatepass", "-up", default=defaults['updatepass'], help="(chrome|firefox|anyothername) opens TrustArc password portal in browser.")
 
-parser.add_argument("--warning", "-w", default=defaults['warning'], help="(yes|no|warnOnly) Displays warning message when vpn disconnects. If warnOnly is set, the program will display warning messages when the vpn is disconnected but not attempt to do anything else.")
+    parser.add_argument("--loginonly", "-l", action="store_true", help="Logs in once and quits.")
 
-parser.add_argument("--simulate", "-s", action="store_true", help="When set, script which would be executed is instead printed to the terminal.")
+    parser.add_argument("--warning", "-w", default=defaults['warning'], help="(yes|no|warnOnly) Displays warning message when vpn disconnects. If warnOnly is set, the program will display warning messages when the vpn is disconnected but not attempt to do anything else.")
 
-parser.add_argument("--reset", action="store_true", help="Use to reset your login information.")
+    parser.add_argument("--simulate", "-s", action="store_true", help="When set, script which would be executed is instead printed to the terminal.")
 
-parser.add_argument("--vpn", "-n", help="Name of VPN to connect to. Must match your configured connection.")
+    parser.add_argument("--reset", action="store_true", help="Use to reset your login information.")
 
-# read arguments from the command line
-args = parser.parse_args()
+    parser.add_argument("--vpn", "-n", help="Name of VPN to connect to. Must match your configured connection.")
+
+    # read arguments from the command line
+    args = parser.parse_args()
+
+setupCommandlineInputs()
 
 #fetch VPN Name
 vpn_name = keyring.get_password(vpn_name, "vpn_name")
-print("Set vpn_name to {} (from keyring)".format(vpn_name))
+#print("Set vpn_name to {} (from keyring)".format(vpn_name))
+print("Using previous VPN name of {}.  To use a different VPN name, run with --vpn=name.".format(vpn_name))
 if vpn_name == None:
     vpn_name = args.vpn
-    print("Set vpn_name to {} (from args.vpn)".format(vpn_name))
+    #print("Set vpn_name to {} (from args.vpn)".format(vpn_name))
 if vpn_name == None:
-    vpn_name = input("Please supply the vpn name:")
-    print("Set vpn_name to {} (from keyboardinput)".format(vpn_name))
+    vpn_name = input("No VPN name was given. Please supply the vpn name:")
+    #print("Set vpn_name to {} (from keyboardinput)".format(vpn_name))
+keyring.set_password(vpn_name, "vpn_name", vpn_name)
+
 
 def setupDelayArgs():
     global majorDelay
@@ -189,8 +197,6 @@ tell application "System Events"
 end tell
 """.format(vpn_name=vpn_name,username=username,password=password,inputPassword=inputPassword, closeDialog=closeDialog)
 
-
-
 def runScript():
     if(args.simulate == True):
         print(genAppleScript())
@@ -211,7 +217,6 @@ def main():
     
     if args.duration == 'fd':
         while(datetime.datetime.now() < dayEnds):
-            #print(genAppleScript())
             runScript()
             time.sleep(int(update_interval))
         print("Completed work day. Good bye!")    
