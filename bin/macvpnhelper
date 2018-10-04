@@ -101,20 +101,15 @@ parser.add_argument("--vpn", "-n", help="Name of VPN to connect to. Must match y
 # read arguments from the command line
 args = parser.parse_args()
 
-
-
 #fetch VPN Name
-try:
-    vpn_name = keyring.get_password(vpn_name, "vpn_name")    
-except:
+vpn_name = keyring.get_password(vpn_name, "vpn_name")
+print("Set vpn_name to {} (from keyring)".format(vpn_name))
+if vpn_name == None:
     vpn_name = args.vpn
+    print("Set vpn_name to {} (from args.vpn)".format(vpn_name))
 if vpn_name == None:
     vpn_name = input("Please supply the vpn name:")
-else:
-    keyring.set_password(vpn_name, "vpn_name", vpn_name)
-
-
-    
+    print("Set vpn_name to {} (from keyboardinput)".format(vpn_name))
 
 def setupDelayArgs():
     global majorDelay
@@ -250,4 +245,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-    
