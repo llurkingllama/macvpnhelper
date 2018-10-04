@@ -69,12 +69,6 @@ def resetCredentials():
     keyring.set_password(vpn_name, "username", username)
     keyring.set_password(vpn_name, "password", password)
 
-#fetchpassword
-try:
-    fetchCredentials()
-except:    
-    resetCredentials()
-
 
 def setupCommandlineInputs():
     global args
@@ -103,21 +97,6 @@ def setupCommandlineInputs():
 
     # read arguments from the command line
     args = parser.parse_args()
-
-setupCommandlineInputs()
-
-#fetch VPN Name
-vpn_name = keyring.get_password(vpn_name, "vpn_name")
-#print("Set vpn_name to {} (from keyring)".format(vpn_name))
-print("Using previous VPN name of {}.  To use a different VPN name, run with --vpn=name.".format(vpn_name))
-if vpn_name == None:
-    vpn_name = args.vpn
-    #print("Set vpn_name to {} (from args.vpn)".format(vpn_name))
-if vpn_name == None:
-    vpn_name = input("No VPN name was given. Please supply the vpn name:")
-    #print("Set vpn_name to {} (from keyboardinput)".format(vpn_name))
-keyring.set_password(vpn_name, "vpn_name", vpn_name)
-
 
 def setupDelayArgs():
     global majorDelay
@@ -209,6 +188,32 @@ def runScript():
         
 
 def main():
+    global vpn_name
+
+    #fetchpassword
+    try:
+        fetchCredentials()
+    except:    
+        resetCredentials()
+    
+    #fetch VPN Name
+    vpn_name = keyring.get_password(vpn_name, "vpn_name")
+    #print("Set vpn_name to {} (from keyring)".format(vpn_name))
+    print("Using previous VPN name of {}.  To use a different VPN name, run with --vpn=name.".format(vpn_name))
+    if vpn_name == None:
+        vpn_name = args.vpn
+        #print("Set vpn_name to {} (from args.vpn)".format(vpn_name))
+    if vpn_name == None:
+        vpn_name = input("No VPN name was given. Please supply the vpn name:")
+        #print("Set vpn_name to {} (from keyboardinput)".format(vpn_name))
+    keyring.set_password(vpn_name, "vpn_name", vpn_name)
+
+
+    setupCommandlineInputs()
+
+
+
+        
     #time in seconds
     dayBegins = datetime.datetime.now().replace(hour=9, minute=0, second=0)
     dayEnds =  datetime.datetime.now().replace(hour=18, minute=0, second=0)
