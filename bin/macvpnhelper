@@ -1,19 +1,16 @@
 #!/usr/bin/env python3
 
-# accept commandline input
-import argparse
+import argparse # accept commandline input
 import keyring
 import getpass
 import sys
 import subprocess
 import time
 import datetime
-
 try:
     import httplib
 except:
     import http.client as httplib
-
 
 #configuration options
 app_name = "vpnhelper"
@@ -23,13 +20,9 @@ dayBegins = datetime.datetime.now().replace(hour=9, minute=0, second=0)
 dayEnds =  datetime.datetime.now().replace(hour=18, minute=0, second=0)
 lunchBegins = datetime.datetime.now().replace(hour=12, minute=0, second=0)
 lunchEnds = datetime.datetime.now().replace(hour=13, minute=0, second=0)
-
-
-#DEFAULT OPTIONS
-# Run for workday, fill in password, don't hit enter, use normal delays. If user wishes to update password, defaults to chrome.
-defaults = {'fillpassword':'andReturn', 'duration':'wd', 'clickspeed':'normal', 'updatepass':'chrome', 'warning':'yes'}
-
 clickspeed = {'superslow':2, 'slow':1, 'normal':1, 'fast':0.5, 'superfast':0.25}
+defaults = {'fillpassword':'andReturn', 'duration':'wd', 'clickspeed':'normal', 'updatepass':'chrome', 'warning':'yes'}
+# Run for workday, fill in password, don't hit enter, use normal delays. If user wishes to update password, defaults to chrome.
 
 
 def screenActive():
@@ -156,26 +149,26 @@ def setupFillPasswordArgs():
         sys.exit(2)
 
 def setupWarningArgs():
-    global alert_applescript
-    
-    alert_applescript = """
-    display dialog "VPN has disconnected" ¬
-    with title "{vpn_name} longer active" ¬
-    with icon caution ¬
-    buttons {{"OK"}}
-    """.format(vpn_name=vpn_name)
-    
     if(args.warning == 'yes'):
         pass
       #  args.fillpassword = 'no'
     elif(args.warning == 'no'):
-        alert_applescript = ""
+        pass
     elif(args.warning == 'warnOnly'):
         ## NEED TO IMPLEMENT
         pass
     else:
         print("Invalid argument passed to --warning / -w")
-        sys.exit(2)    
+        sys.exit(2)
+
+def warn():
+    global alert_applescript    
+    alert_applescript = """
+    display dialog "VPN has disconnected" ¬
+    with title "{vpn_name} no longer active" ¬
+    with icon caution ¬
+    buttons {{"OK"}}
+    """.format(vpn_name=vpn_name)
         
 def genAppleScript():
     """Outputs applescript to be run by program."""
@@ -207,6 +200,7 @@ def runScript():
     elif(args.warning == 'yes'):
         pass
     subprocess.call("""osascript -e '{}' """.format( genAppleScript() ), shell=True)
+    
         
 def main():
     global vpn_name
@@ -216,9 +210,7 @@ def main():
     try:
         fetchCredentials()
     except:    
-        resetCredentials()
-
-        
+        resetCredentials()        
     
     if args.duration == 'fd':
         while(datetime.datetime.now() < dayEnds):
@@ -251,7 +243,6 @@ def main():
         print("Completed {} hour interval. Good bye!".format(hours))    
         sys.exit(0)
 
-        
 if __name__ == "__main__":
     main()
 
