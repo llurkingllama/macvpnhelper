@@ -69,7 +69,24 @@ def resetCredentials():
     keyring.set_password(vpn_name, "username", username)
     keyring.set_password(vpn_name, "password", password)
 
+def setVpnName():
+    global vpn_name
+    global args
 
+    #Get VPN Name
+    if args.vpn != None:
+        vpn_name = args.vpn
+        print("VPN name set to {}. In the future, this name will be used by default unless reset with --vpn=\"name\".".format(vpn_name))
+    elif keyring.get_password(vpn_name, "vpn_name") != None:
+        vpn_name = keyring.get_password(vpn_name, "vpn_name")
+        print("Using previous VPN name of {}.  To use a different VPN name, run with --vpn=\"name\".".format(vpn_name))
+    else:
+        vpn_name = input("No VPN name was given. Please supply the vpn name:")  
+        print("VPN name set to {}. In the future, this name will be used by default unless reset with --vpn=\"name\".".format(vpn_name))
+    keyring.set_password(vpn_name, "vpn_name", vpn_name)
+
+
+    
 def setupCommandlineInputs():
     global args
     
@@ -191,18 +208,9 @@ def main():
 
     #Get user selected options
     setupCommandlineInputs()
-    
-    #Get VPN Name
-    if args.vpn != None:
-        vpn_name = args.vpn
-        print("VPN name set to {}. In the future, this name will be used by default unless reset with --vpn=\"name\".".format(vpn_name))
-    elif keyring.get_password(vpn_name, "vpn_name") != None:
-        vpn_name = keyring.get_password(vpn_name, "vpn_name")
-        print("Using previous VPN name of {}.  To use a different VPN name, run with --vpn=\"name\".".format(vpn_name))
-    else:
-        vpn_name = input("No VPN name was given. Please supply the vpn name:")  
-        print("VPN name set to {}. In the future, this name will be used by default unless reset with --vpn=\"name\".".format(vpn_name))
-    keyring.set_password(vpn_name, "vpn_name", vpn_name)
+
+    setVpnName()
+
     
     #Get VPN password and username
     try:
