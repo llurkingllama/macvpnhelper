@@ -8,7 +8,7 @@ with open("LICENSE", "r") as li:
 
 setuptools.setup(
     name="macvpnhelper",
-    version="0.0.4",
+    version="0.0.5",
     author="Ryan Shea",
     author_email="rshea@aviatainc.com",
     packages=setuptools.find_packages(),
@@ -22,22 +22,26 @@ setuptools.setup(
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
-        "Operating System :: MacOS",
+        "Operating System :: MacOS :: MacOS X",
+        "Topic :: Utilities",
         "Topic :: System :: Networking",
         "Natural Language :: English",
         "Development Status :: 4 - Beta"
+        "Intended Audience :: End Users/Desktop",
+        "Environment :: Console",
+        "Environment :: MacOS X",
     ],
     
      #Dependency packages (distributions)
     install_requires=[
         "keyring",
-        "argparse",
-        "getpass",
-        "sys",
-        "subprocess",
-        "time",
-        "datetime",
-        "httplib",
+#        "argparse",
+#        "getpass",
+#        "sys",
+#        "subprocess",
+#        "time",
+#        "datetime",
+#        "httplib",
 #        "http.client",        
     ],
 )

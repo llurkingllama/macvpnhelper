@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: macvpnhelper
-Version: 0.0.4
+Version: 0.0.5
 Summary: Tool to monitor and restart Mac VPN.
 Home-page: https://github.com/llurkingllama/macvpnhelper/
 Author: Ryan Shea
@@ -76,8 +76,11 @@ Description: INSTALLATION
 Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
-Classifier: Operating System :: MacOS
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Topic :: Utilities
 Classifier: Topic :: System :: Networking
 Classifier: Natural Language :: English
-Classifier: Development Status :: 4 - Beta
+Classifier: Development Status :: 4 - BetaIntended Audience :: End Users/Desktop
+Classifier: Environment :: Console
+Classifier: Environment :: MacOS X
 Description-Content-Type: text/markdown
