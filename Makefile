@@ -1,7 +1,10 @@
+setup:
+	python3 setup.py sdist bdist_wheel
+
 init:
-    pip install -r requirements.txt
+	pip install -r requirements.txt
 
 test:
-    py.test tests
+	py.test tests
 
 .PHONY: init test

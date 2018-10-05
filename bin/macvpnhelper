@@ -56,7 +56,6 @@ def fetchCredentials():
     if username == None:
         raise
     password = keyring.get_password(vpn_name, "password")
-#    vpn_name = keyring.get_password(vpn_name, "vpn_name")
     
 def resetCredentials():
     global username
@@ -245,4 +244,11 @@ def main():
 
 if __name__ == "__main__":
     main()
+#    test = connectionResponsive()
+#    if test == True:
+#        print("Connection Responsive")
+#    elif test == False:
+#        print("Connection Unresponsive")
+#    else:
+#        print("ERROR: non boolean result")
 
