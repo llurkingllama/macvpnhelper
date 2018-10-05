@@ -1,6 +1,25 @@
-usage: macvpnhelper [-h] [--duration DURATION] [--clickspeed CLICKSPEED]
-                    [--fillpassword FILLPASSWORD] [--updatepass UPDATEPASS]
-                    [--loginonly] [--warning WARNING] [--simulate] [--reset]
+INSTALLATION
+------------
+1)  Homebrew
+  a) Install Homebrew (if you don't have it)
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  b) Update Homebrew
+  brew update && brew upgrade
+2) Install python3
+  brew install python
+3) Install package
+  pip install macvpnhelper
+
+Now you can just type "macvpnhelper" in the terminal.
+
+Alternatively, you can run the script located in this package directly. It is located in the bin/ folder.
+  ./macvpnhelper
+
+
+USAGE
+-----
+macvpnhelper [-h] [--duration DURATION] [--clickspeed CLICKSPEED]
+                    [--fillpassword FILLPASSWORD] [--simulate] [--reset]
                     [--vpn VPN]
 
 optional arguments:
@@ -17,17 +36,9 @@ optional arguments:
                         return in the dialogs. CAUTION: since this password is
                         provided to the GUI, it is possible that intermediate
                         clicks will result in your password being typed to,
-                        e.g., chat dialogs. 'yes' is therefore safer than
-                        'andReturn.'
-  --updatepass UPDATEPASS, -up UPDATEPASS
-                        (chrome|firefox|anyothername) opens TrustArc password
-                        portal in browser.
-  --loginonly, -l       Logs in once and quits.
-  --warning WARNING, -w WARNING
-                        (yes|no|warnOnly) Displays warning message when vpn
-                        disconnects. If warnOnly is set, the program will
-                        display warning messages when the vpn is disconnected
-                        but not attempt to do anything else.
+                        e.g., chat dialogs. Prevent this by using 'yes'
+                        instead of 'andReturn', or making sure the clickspeed
+                        matches your GUI responsiveness.
   --simulate, -s        When set, script which would be executed is instead
                         printed to the terminal.
   --reset               Use to reset your login information.
