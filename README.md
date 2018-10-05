@@ -8,12 +8,14 @@ INSTALLATION
 2) Install python3
   brew install python
 3) Install package
-  pip install macvpnhelper
+  pip3 install macvpnhelper
 
-Now you can just type "macvpnhelper" in the terminal.
+Run by typing "macvpnhelper" in the terminal.
 
 Alternatively, you can run the script located in this package directly. It is located in the bin/ folder.
   ./macvpnhelper
+  
+NOTE: You will be prompted for keychain access for storing/retrieving the user, password, and vpn name.
 
 
 USAGE

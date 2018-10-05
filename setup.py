@@ -8,7 +8,7 @@ with open("LICENSE", "r") as li:
 
 setuptools.setup(
     name="macvpnhelper",
-    version="0.0.5",
+    version="0.0.6",
     author="Ryan Shea",
     author_email="rshea@aviatainc.com",
     packages=setuptools.find_packages(),
