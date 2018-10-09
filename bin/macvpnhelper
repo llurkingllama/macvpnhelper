@@ -26,15 +26,15 @@ defaults = {'fillpassword':'andReturn', 'duration':'fd', 'clickspeed':'normal', 
 
 
 def screenActive():
-    """Returns False if screen is locked.  True otherwise."""
-    
-    #Should output 4 if screen is active on mac, 0 otherwise:
-    code =  subprocess.call("ioreg -n IODisplayWrangler | grep -i IOPowerManagement | perl -pe 's/^.*DevicePowerState\"=([0-9]+).*$/\1/'".format( genAppleScript() ), shell=True)
-
-    if code == 4:
+    """Returns False if screen is locked.  True otherwise."""   
+    command = r"""ioreg -n IODisplayWrangler | grep -i IOPowerManagement | perl -pe 's/^.*DevicePowerState"=([0-9]+).*$/\1/'"""
+    proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
+    output, err = proc.communicate()    
+    #Command should output 4 if screen is active on mac, 0 otherwise:    
+    if int(output) == 4:
        return True
     else:
-        return false
+        return False
 
 def connectionResponsive():
     """Checks if it's possible to talk to google"""
@@ -147,18 +147,26 @@ def setupWarningArgs():
         print("Invalid argument passed to --warning / -w")
         sys.exit(2)
 
+
+        
 def warn():
-    global alert_applescript    
+    global vpn_name
     alert_applescript = """
-    display dialog "VPN has disconnected" ¬
-    with title "{vpn_name} no longer active" ¬
-    with icon caution ¬
-    buttons {{"OK"}}
+    set rc to do shell script "scutil --nc status " & vpn_name
+    if rc starts with "Disconnected" then
+       display dialog "VPN has disconnected" ¬
+       with title "{vpn_name} no longer active" ¬
+       with icon caution ¬
+       buttons {{"OK"}}
+    endif
     """.format(vpn_name=vpn_name)
     
-    process = subprocess.Popen(["osascript", "-e","'{}'".format(alert_applescript)], stdout=subprocess.PIPE)
-    out, err = process.communicate() #blocks until the process terminates
-    return out
+    #process = subprocess.Popen(["osascript", "-e","'{}'".format(alert_applescript)], stdout=subprocess.PIPE, universal_newlines=True)
+    #out, err = process.communicate() #blocks until the process terminates
+    #print(out)
+
+    out = subprocess.call("""osascript -e '{}' """.format( alert_applescript ), shell=True)
+    return(out)
 
 #def checkVpnStatus():
 #    pass
@@ -238,5 +246,11 @@ def main():
 
 if __name__ == "__main__":
     main()
-
+#    setupCommandlineInputs()
+#    setVpnName()
+#    try:
+#        fetchCredentials()
+#    except:    
+#        resetCredentials()        
+#    warn()
 
