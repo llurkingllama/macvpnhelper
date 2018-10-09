@@ -49,39 +49,42 @@ def connectionResponsive():
 def fetchCredentials():
     global username
     global password
-    global vpn_name
-
-    username = keyring.get_password(vpn_name, "username")
+    global app_name
+    username = keyring.get_password(app_name, "username")
     if username == None:
         raise
-    password = keyring.get_password(vpn_name, "password")
+    password = keyring.get_password(app_name, "password")
     
 def resetCredentials():
     global username
     global password
-
+    global app_name
+    
     username = input("Please supply the vpn username:")
     password = getpass.getpass("Please supply the vpn password:")
-    keyring.set_password(vpn_name, "username", username)
-    keyring.set_password(vpn_name, "password", password)
+    keyring.set_password(app_name, "username", username)
+    keyring.set_password(app_name, "password", password)
 
 def setVpnName():
     global vpn_name
     global args
-
+    global app_name
+    
     #Get VPN Name
     if args.vpn != None:
         vpn_name = args.vpn
         print("VPN name set to {}. In the future, this name will be used by default unless reset with --vpn=\"name\".".format(vpn_name))
     else:
         try:
-            keyring.get_password(vpn_name, "vpn_name")
-            vpn_name = keyring.get_password(vpn_name, "vpn_name")
+            vpn_name = keyring.get_password(app_name, "vpn_name")
             print("Using previous VPN name of {}.  To use a different VPN name, run with --vpn=\"name\".".format(vpn_name))
         except NameError:
             vpn_name = input("No VPN name was given. Please supply the vpn name:")  
             print("VPN name set to {}. In the future, this name will be used by default unless reset with --vpn=\"name\".".format(vpn_name))
-    keyring.set_password(vpn_name, "vpn_name", vpn_name)
+    if vpn_name == None:
+        vpn_name = input("No VPN name was given. Please supply the vpn name:")
+        print("VPN name set to {}. In the future, this name will be used by default unless reset with --vpn=\"name\".".format(vpn_name))
+    keyring.set_password(app_name, "vpn_name", vpn_name)
     
 def setupCommandlineInputs():
     global args
