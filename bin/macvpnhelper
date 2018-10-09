@@ -13,8 +13,7 @@ except:
     import http.client as httplib
 
 #configuration options
-app_name = "vpnhelper"
-vpn_name = "TDEV IPSec VPN"
+app_name = "macvpnhelper"
 update_interval = "5" #how often to check VPN (in seconds)
 dayBegins = datetime.datetime.now().replace(hour=9, minute=0, second=0)
 dayEnds =  datetime.datetime.now().replace(hour=18, minute=0, second=0)
@@ -30,7 +29,7 @@ def screenActive():
     command = r"""ioreg -n IODisplayWrangler | grep -i IOPowerManagement | perl -pe 's/^.*DevicePowerState"=([0-9]+).*$/\1/'"""
     proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
     output, err = proc.communicate()    
-    #Command should output 4 if screen is active on mac, 0 otherwise:    
+    #Terminal ommand should output 4 if screen is active on mac, 0 otherwise:    
     if int(output) == 4:
        return True
     else:
@@ -74,15 +73,15 @@ def setVpnName():
     if args.vpn != None:
         vpn_name = args.vpn
         print("VPN name set to {}. In the future, this name will be used by default unless reset with --vpn=\"name\".".format(vpn_name))
-    elif keyring.get_password(vpn_name, "vpn_name") != None:
-        vpn_name = keyring.get_password(vpn_name, "vpn_name")
-        print("Using previous VPN name of {}.  To use a different VPN name, run with --vpn=\"name\".".format(vpn_name))
     else:
-        vpn_name = input("No VPN name was given. Please supply the vpn name:")  
-        print("VPN name set to {}. In the future, this name will be used by default unless reset with --vpn=\"name\".".format(vpn_name))
+        try:
+            keyring.get_password(vpn_name, "vpn_name")
+            vpn_name = keyring.get_password(vpn_name, "vpn_name")
+            print("Using previous VPN name of {}.  To use a different VPN name, run with --vpn=\"name\".".format(vpn_name))
+        except NameError:
+            vpn_name = input("No VPN name was given. Please supply the vpn name:")  
+            print("VPN name set to {}. In the future, this name will be used by default unless reset with --vpn=\"name\".".format(vpn_name))
     keyring.set_password(vpn_name, "vpn_name", vpn_name)
-
-
     
 def setupCommandlineInputs():
     global args
@@ -245,12 +244,12 @@ def main():
         sys.exit(0)
 
 if __name__ == "__main__":
-    main()
-#    setupCommandlineInputs()
-#    setVpnName()
-#    try:
-#        fetchCredentials()
-#    except:    
-#        resetCredentials()        
-#    warn()
+#    main()
+    setupCommandlineInputs()
+    setVpnName()
+    try:
+        fetchCredentials()
+    except:    
+       resetCredentials()        
+    warn()
 
