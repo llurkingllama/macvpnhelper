@@ -156,10 +156,10 @@ def warn():
     alert_applescript = """set vpn_name to "\\\"{vpn_name}\\\""
     set rc to do shell script "scutil --nc status " & vpn_name
     if rc starts with "Disconnected" then
-       display dialog "VPN has disconnected" ¬
+       display dialog "VPN has disconnected, click OK to reconnect." ¬
        with title "{vpn_name} no longer active" ¬
        with icon caution ¬
-       buttons {{"OK"}}
+       buttons {{"Cancel", "OK"}} default button "OK" cancel button "Cancel"
     end if
     """.format(vpn_name=vpn_name)
     
