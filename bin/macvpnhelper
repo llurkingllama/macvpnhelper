@@ -153,21 +153,21 @@ def setupWarningArgs():
         
 def warn():
     global vpn_name
-    alert_applescript = """
+    alert_applescript = """set vpn_name to "\\\"{vpn_name}\\\""
     set rc to do shell script "scutil --nc status " & vpn_name
     if rc starts with "Disconnected" then
        display dialog "VPN has disconnected" ¬
        with title "{vpn_name} no longer active" ¬
        with icon caution ¬
        buttons {{"OK"}}
-    endif
+    end if
     """.format(vpn_name=vpn_name)
     
     #process = subprocess.Popen(["osascript", "-e","'{}'".format(alert_applescript)], stdout=subprocess.PIPE, universal_newlines=True)
     #out, err = process.communicate() #blocks until the process terminates
     #print(out)
 
-    out = subprocess.call("""osascript -e '{}' """.format( alert_applescript ), shell=True)
+    out = subprocess.call("""osascript -e '{}'""".format( alert_applescript ), shell=True)
     return(out)
 
 #def checkVpnStatus():
@@ -253,6 +253,6 @@ if __name__ == "__main__":
     try:
         fetchCredentials()
     except:    
-       resetCredentials()        
+       resetCredentials()
     warn()
 
