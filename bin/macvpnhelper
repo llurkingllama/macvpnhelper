@@ -19,7 +19,7 @@ dayBegins = datetime.datetime.now().replace(hour=9, minute=0, second=0)
 dayEnds =  datetime.datetime.now().replace(hour=18, minute=0, second=0)
 lunchBegins = datetime.datetime.now().replace(hour=12, minute=0, second=0)
 lunchEnds = datetime.datetime.now().replace(hour=13, minute=0, second=0)
-clickspeed = {'superslow':2, 'slow':1, 'normal':1, 'fast':0.5, 'superfast':0.25}
+clickspeed = {'superslow':4, 'slow':2, 'normal':1, 'fast':0.5, 'superfast':0.25}
 defaults = {'fillpassword':'andReturn', 'duration':'fd', 'clickspeed':'normal', 'updatepass':'chrome', 'warning':'no'}
 # Run for workday, fill in password, don't hit enter, use normal delays. If user wishes to update password, defaults to chrome.
 
