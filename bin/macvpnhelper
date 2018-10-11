@@ -210,6 +210,10 @@ def main():
 
     setupCommandlineInputs()
     setVpnName()
+
+    if (args.reset == True):
+        resetCredentials()
+        
     try:
         fetchCredentials()
     except:    
@@ -247,12 +251,12 @@ def main():
         sys.exit(0)
 
 if __name__ == "__main__":
-#    main()
-    setupCommandlineInputs()
-    setVpnName()
-    try:
-        fetchCredentials()
-    except:    
-       resetCredentials()
-    warn()
+    main()
+#    setupCommandlineInputs()
+#    setVpnName()
+#    try:
+#        fetchCredentials()
+#    except:    
+#       resetCredentials()
+#    warn()
 
