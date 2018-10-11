@@ -139,11 +139,9 @@ def setupFillPasswordArgs():
 def setupWarningArgs():
     if(args.warning == 'yes'):
         pass
-      #  args.fillpassword = 'no'
     elif(args.warning == 'no'):
         pass
     elif(args.warning == 'warnOnly'):
-        ## NEED TO IMPLEMENT
         pass
     else:
         print("Invalid argument passed to --warning / -w")
@@ -199,9 +197,11 @@ def runScript():
         print(genAppleScript())
         return
     elif(args.warning == 'warnOnly'):
+        warn()
+        time.sleep(60)
         return
     elif(args.warning == 'yes'):
-        pass
+        warn()
     subprocess.call("""osascript -e '{}' """.format( genAppleScript() ), shell=True)
     
         
@@ -214,7 +214,7 @@ def main():
         fetchCredentials()
     except:    
         resetCredentials()        
-    
+        
     if args.duration == 'fd':
         while(datetime.datetime.now() < dayEnds):
             runScript()
