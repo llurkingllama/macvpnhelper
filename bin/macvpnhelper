@@ -165,11 +165,26 @@ def warn():
     #out, err = process.communicate() #blocks until the process terminates
     #print(out)
 
+    #returns 0 if user hits okay, 0 if user hits cancel
     out = subprocess.call("""osascript -e '{}'""".format( alert_applescript ), shell=True)
-    return(out)
+    if out == 0:                 
+        return("OK")
+    elif out == 1:
+        return("Cancel")
+    else:
+        print("ERROR: terminal returned unexpected output (not 0 or 1) from warning script execution.")
+        raise
 
-#def checkVpnStatus():
-#    pass
+def checkVpnConnected():
+    command = """scutil --nc status \"{vpn_name}\" | grep Connected""".format(vpn_name=vpn_name)
+    out = subprocess.call(command, shell=True)
+    if(out == 0):
+        return(True)
+    elif(out == 1):
+        return(False)
+    else:
+        print("ERROR: terminal returned unexpected output (not 0 or 1) from warning script execution.")
+        raise
         
 def genAppleScript():
     """Outputs applescript to be run by program."""
@@ -197,12 +212,19 @@ def runScript():
         print(genAppleScript())
         return
     elif(args.warning == 'warnOnly'):
-        warn()
+        choice = warn()
+        if choice == "Cancel":
+            print("Halting app because user chose to cancel.")
+            sys.exit(0)
         time.sleep(60)
         return
     elif(args.warning == 'yes'):
-        warn()
-    subprocess.call("""osascript -e '{}' """.format( genAppleScript() ), shell=True)
+        choice = warn()
+        if choice == "Cancel":
+            print("Halting app because user chose to cancel.")
+            sys.exit(0)
+    out = subprocess.call("""osascript -e '{}' """.format( genAppleScript() ), shell=True)
+    print("Output of main script execution was: ", out)
     
         
 def main():
@@ -251,12 +273,12 @@ def main():
         sys.exit(0)
 
 if __name__ == "__main__":
-    main()
-#    setupCommandlineInputs()
-#    setVpnName()
-#    try:
-#        fetchCredentials()
-#    except:    
-#       resetCredentials()
-#    warn()
+#    main()
+    setupCommandlineInputs()
+    setVpnName()
+    try:
+        fetchCredentials()
+    except:    
+       resetCredentials()
+    checkVpnConnected()
 
