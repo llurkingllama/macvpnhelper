@@ -31,15 +31,13 @@ usage: macvpnhelper [-h] [--duration DURATION] [--clickspeed CLICKSPEED]
                     [--interval INTERVAL] [--simulate] [--reset] [--vpn VPN]
 
 Examples:
-    macvpnhelper
+      macvpnhelper
   Uses existing defaults of --warning=yes --duration=fd --clickspeed=normal.  The app will display a warning (which must be clicked) before filling password information and stop executing at 6pm.
 
-    macvpnhelper --fillpassword=andReturn --warning=no --clickspeed=fast --interval=3
-
+      macvpnhelper --fillpassword=andReturn --warning=no --clickspeed=fast --interval=3
   Fills password prompt and doesn't warn that it is doing so (could type password into a different active dialog!), clicks dialog buttons quickly (use on fast machine)
 
-    macvpnhelper --reset --vpn="ISS Wi-fi" --duration=3h
-
+      macvpnhelper --reset --vpn="ISS Wi-fi" --duration=3h
   Clears existing user/password information and defines a new VPN name. Runs for 3 hours before terminating.
 
 optional arguments:

@@ -91,15 +91,13 @@ def setupCommandlineInputs():
     
     parser = argparse.ArgumentParser(description="""
 Examples:
-    macvpnhelper
+      macvpnhelper
   Uses existing defaults of --warning=yes --duration=fd --clickspeed=normal.  The app will display a warning (which must be clicked) before filling password information and stop executing at 6pm.
 
-    macvpnhelper --fillpassword=andReturn --warning=no --clickspeed=fast --interval=3
-
+      macvpnhelper --fillpassword=andReturn --warning=no --clickspeed=fast --interval=3
   Fills password prompt and doesn't warn that it is doing so (could type password into a different active dialog!), clicks dialog buttons quickly (use on fast machine)
 
-    macvpnhelper --reset --vpn="ISS Wi-fi" --duration=3h
-
+      macvpnhelper --reset --vpn="ISS Wi-fi" --duration=3h
   Clears existing user/password information and defines a new VPN name. Runs for 3 hours before terminating.
 """, formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("--duration", "-d", default=defaults['duration'], help="(time in hours|'wd'|'fd'|'runOnce') E.g., 8h, the amount of time (in hours) to keep the VPN active. Use 'wd' to do 9-12 and 1-6 (default), 'fd' to do 9-6, and 'runOnce' to do a single check and then terminate.")
