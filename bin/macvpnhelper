@@ -94,7 +94,7 @@ Example:
   macvpnhelper --fillpassword=andReturn --warning=no --clickspeed=fast
 
 Fills password prompt and doesn't warn that it is doing so (could type password into a different active dialog!), clicks dialog buttons quickly (use on fast machine)""", formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument("--duration", "-d", default=defaults['duration'], help="(time in hours|'wd'|'fd') E.g., 8h, the amount of time (in hours) to keep the VPN active. Use 'wd' to do 9-12 and 1-6 (default), or 'fd' to do 9-6.")
+    parser.add_argument("--duration", "-d", default=defaults['duration'], help="(time in hours|'wd'|'fd'|'runOnce') E.g., 8h, the amount of time (in hours) to keep the VPN active. Use 'wd' to do 9-12 and 1-6 (default), 'fd' to do 9-6, and 'runOnce' to do a single check and then terminate.")
     parser.add_argument("--clickspeed", "-cs", default=defaults['clickspeed'], help="(superfast|fast|normal|slow|superslow) adjust based on responsiveness of your GUI")
     parser.add_argument("--fillpassword", "-fp", default=defaults['fillpassword'],  help="(yes|no|andReturn) type in password and optionally hit return in the dialogs.  CAUTION: since this password is provided to the GUI, it is possible that intermediate clicks will result in your password being typed to, e.g., chat dialogs. Prevent this by using 'yes' instead of 'andReturn', or making sure the clickspeed matches your GUI responsiveness.")
 #    parser.add_argument("--updatepass", "-up", default=defaults['updatepass'], help="(chrome|firefox|anyothername) opens password portal in browser.")
@@ -256,16 +256,17 @@ def main():
             runScript()
             time.sleep(int(update_interval))
         print("Completed work day. Good bye!")    
-        sys.exit(0)
-        
-    if args.duration == 'wd':
+        sys.exit(0)        
+    elif args.duration == 'wd':
         while(datetime.datetime.now() < dayEnds):
             if ( not( lunchBegins < datetime.datetime.now() < lunchEnds) ):
                 runScript()
                 time.sleep(int(update_interval))
         print("Completed work day. Good bye!")    
         sys.exit(0)
-        
+    elif args.duration == 'runOnce':
+         runScript()
+         sys.exit(0)
     else:        
         try:
             startTime = time.time()
