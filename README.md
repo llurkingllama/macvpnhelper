@@ -1,13 +1,21 @@
 INSTALLATION
 ------------
 1)  Homebrew
+
   a) Install Homebrew (if you don't have it)
+  
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    
   b) Update Homebrew
+  
     brew update && brew upgrade
+    
 2) Install python3
+
   brew install python
+  
 3) Install package
+
   pip3 install macvpnhelper
 
 Run by typing "macvpnhelper" in the terminal.
@@ -19,10 +27,14 @@ NOTE: You will be prompted for keychain access for storing/retrieving the user, 
 
 UPDATING
 --------
+
   pip3 install --upgrade macvpnhelper
+  
 or
+
   pip3 uninstall macvpnhelper
   pip3 --no-cache-dir install macvpnhelper
+  
 
 USAGE
 -----
@@ -31,6 +43,7 @@ usage: macvpnhelper [-h] [--duration DURATION] [--clickspeed CLICKSPEED]
                     [--interval INTERVAL] [--simulate] [--reset] [--vpn VPN]
 
 Examples:
+
       macvpnhelper
   Uses existing defaults of --warning=yes --duration=fd --clickspeed=normal.  The app will display a warning (which must be clicked) before filling password information and stop executing at 6pm.
 
