@@ -90,15 +90,21 @@ def setupCommandlineInputs():
     global args
     
     parser = argparse.ArgumentParser(description="""
-Example:
-  macvpnhelper --fillpassword=andReturn --warning=no --clickspeed=fast
+Examples:
+    macvpnhelper
+  Uses existing defaults of --warning=yes --duration=fd --clickspeed=normal.  The app will display a warning (which must be clicked) before filling password information and stop executing at 6pm.
 
-Fills password prompt and doesn't warn that it is doing so (could type password into a different active dialog!), clicks dialog buttons quickly (use on fast machine)""", formatter_class=argparse.RawTextHelpFormatter)
+    macvpnhelper --fillpassword=andReturn --warning=no --clickspeed=fast --interval=3
+
+  Fills password prompt and doesn't warn that it is doing so (could type password into a different active dialog!), clicks dialog buttons quickly (use on fast machine)
+
+    macvpnhelper --reset --vpn="ISS Wi-fi" --duration=3h
+
+  Clears existing user/password information and defines a new VPN name. Runs for 3 hours before terminating.
+""", formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("--duration", "-d", default=defaults['duration'], help="(time in hours|'wd'|'fd'|'runOnce') E.g., 8h, the amount of time (in hours) to keep the VPN active. Use 'wd' to do 9-12 and 1-6 (default), 'fd' to do 9-6, and 'runOnce' to do a single check and then terminate.")
     parser.add_argument("--clickspeed", "-cs", default=defaults['clickspeed'], help="(superfast|fast|normal|slow|superslow) adjust based on responsiveness of your GUI")
     parser.add_argument("--fillpassword", "-fp", default=defaults['fillpassword'],  help="(yes|no|andReturn) type in password and optionally hit return in the dialogs.  CAUTION: since this password is provided to the GUI, it is possible that intermediate clicks will result in your password being typed to, e.g., chat dialogs. Prevent this by using 'yes' instead of 'andReturn', or making sure the clickspeed matches your GUI responsiveness.")
-#    parser.add_argument("--updatepass", "-up", default=defaults['updatepass'], help="(chrome|firefox|anyothername) opens password portal in browser.")
-#    parser.add_argument("--loginonly", "-l", action="store_true", help="Logs in once and quits.")
     parser.add_argument("--warning", "-w", default=defaults['warning'], help="(yes|no) Displays warning message prior to filling in password.")
     parser.add_argument("--interval", "-i", default=defaults['interval'], help="number of seconds to wait between polling connection status (default is 5)")
     parser.add_argument("--simulate", "-s", action="store_true", help="When set, script which would be executed is instead printed to the terminal.")
