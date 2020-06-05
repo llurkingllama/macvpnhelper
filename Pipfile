@@ -11,7 +11,7 @@ name = "test"
 [packages]
 keyring = "*"
 jira = "*"
-django = "==1.4.2"
+django = "==1.11.29"
 
 [dev-packages]
 pytest = "*"
